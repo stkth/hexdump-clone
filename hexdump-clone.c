@@ -10,13 +10,14 @@
  */
 #define _GNU_SOURCE
 
-#include <assert.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <stdint.h>
+#include <errno.h>
+#include <assert.h>
+#include <string.h>
 
 #define ASCII_PRINT_START (uint8_t)0x1f
 #define ASCII_PRINT_END (uint8_t)0x7f
@@ -111,7 +112,7 @@ int main(int argc, char *argv[])
 			break;
 		case 'b':
 			bytesperline = (uint8_t)strtoul(optarg, NULL, 10);
-			if (bytesperline == 0)
+			if (bytesperline <= 0)
 				exit(EXIT_FAILURE);
 			break;
 		case 's':
@@ -143,13 +144,14 @@ int main(int argc, char *argv[])
 
 	bytebuf = (uint8_t *)malloc(bytesperline * sizeof(uint8_t));
 	if (bytebuf == NULL) {
-		fprintf(stderr, "Allocating Line Byte Buffer Failed");
+		fprintf(stderr, "Allocation of byte buffer failed");
 		exit(EXIT_FAILURE);
 	}
 
 	if (skip != 0) {
 		if (-1 == lseek(fd, skip, SEEK_SET)) {
-			fprintf(stderr, "Skipping %ld bytes failed!\n", skip);
+			fprintf(stderr, "%s : Skipping %ld bytes failed!\n",
+				strerror(errno), skip);
 			exit(EXIT_FAILURE);
 		}
 	}
