@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 			break;
 		case 'b':
 			bytesperline = (uint8_t)strtoul(optarg, NULL, 10);
-			if (bytesperline <= 0)
+			if (bytesperline == 0)
 				exit(EXIT_FAILURE);
 			break;
 		case 's':
