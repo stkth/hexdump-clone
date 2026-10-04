@@ -34,11 +34,11 @@
 #define BYTESPERLINE_RANGE(bpl) ((bpl > 0) && (bpl <= 32))
 
 void printByteLine(uint8_t *buf, uint8_t bytesperline, size_t size,
-		       off_t offset)
+		   off_t offset)
 {
 	assert(offset >= 0);
-    assert(bytesperline > 0);
-    assert(buf != NULL);
+	assert(bytesperline > 0);
+	assert(buf != NULL);
 
 	if (buf == NULL)
 		return;
@@ -106,17 +106,16 @@ void printUsage()
 
 void printVersion()
 {
-   printf("git-%s\n", CVS_GIT_VERSION);
+	printf("git-%s\n", CVS_GIT_VERSION);
 }
 
 int main(int argc, char *argv[])
 {
-    uint8_t bytesperline = BYTESPERLINE_DEFAULT;
+	uint8_t bytesperline = BYTESPERLINE_DEFAULT;
 	off_t offsetcnt = 0, skip = 0;
 	ssize_t readlimit = 0, ret = 0;
 	int fd, opt;
 	uint8_t *bytebuf;
-
 
 	while ((opt = getopt(argc, argv, "vhn:b:s:")) != -1) {
 		switch (opt) {
@@ -147,7 +146,7 @@ int main(int argc, char *argv[])
 		case 'h':
 			printUsage();
 			exit(EXIT_SUCCESS);
-        case 'v':
+		case 'v':
 			printVersion();
 			exit(EXIT_SUCCESS);
 		default:
@@ -197,14 +196,13 @@ int main(int argc, char *argv[])
 
 			if (readlimit < 0) {
 				printByteLine(bytebuf, bytesperline,
-						  (size_t)(readlimit + ret),
-						  offsetcnt);
+					      (size_t)(readlimit + ret),
+					      offsetcnt);
 				break;
 			}
 		}
 
-		printByteLine(bytebuf, bytesperline, (size_t)ret,
-				  offsetcnt);
+		printByteLine(bytebuf, bytesperline, (size_t)ret, offsetcnt);
 		offsetcnt += bytesperline;
 	}
 
