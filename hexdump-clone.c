@@ -96,12 +96,11 @@ ssize_t readBytesFromFileDesc(int fd, uint8_t *bytebuf, size_t bytes)
 void printUsage()
 {
 	fprintf(stdout,
-		"Usage %s"
+		"Usage: %s <flags> <path-to-file> or '-'(stdin)"
 		"\n\t-v version"
 		"\n\t-s <skip bytes> (> 0) "
 		"\n\t-b <bytes per line> (1 to 32)"
-		"\n\t-n <num of bytes> (> 0)"
-		"\n\t<path-to-file> or '-' to read from stdin\n",
+		"\n\t-n <num of bytes> (> 0)\n\n",
 		HEXDUMP_CLONE);
 }
 
