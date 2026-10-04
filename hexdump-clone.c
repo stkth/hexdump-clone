@@ -22,6 +22,11 @@
 
 #define HEXDUMP_CLONE "hexdump-clone"
 
+/* CVS_GIT_VERSION is obtained from cmake project configuration */
+#ifndef CVS_GIT_VERSION
+#define CVS_GTT_VERSION "unset"
+#endif
+
 #define ASCII_PRINT_START (uint8_t)0x1f
 #define ASCII_PRINT_END (uint8_t)0x7f
 
@@ -92,11 +97,17 @@ void printUsage()
 {
 	fprintf(stdout,
 		"Usage %s"
+		"\n\t-v version"
 		"\n\t-s <skip bytes> (> 0) "
 		"\n\t-b <bytes per line> (1 to 32)"
 		"\n\t-n <num of bytes> (> 0)"
 		"\n\t<path-to-file> or '-' to read from stdin\n",
 		HEXDUMP_CLONE);
+}
+
+void printVersion()
+{
+   printf("git-%s\n", CVS_GIT_VERSION);
 }
 
 int main(int argc, char *argv[])
@@ -108,7 +119,7 @@ int main(int argc, char *argv[])
 	uint8_t *bytebuf;
 
 
-	while ((opt = getopt(argc, argv, "hn:b:s:")) != -1) {
+	while ((opt = getopt(argc, argv, "vhn:b:s:")) != -1) {
 		switch (opt) {
 		case 'n':
 			readlimit = strtol(optarg, NULL, 10);
@@ -136,6 +147,9 @@ int main(int argc, char *argv[])
 			break;
 		case 'h':
 			printUsage();
+			exit(EXIT_SUCCESS);
+        case 'v':
+			printVersion();
 			exit(EXIT_SUCCESS);
 		default:
 			printUsage();
