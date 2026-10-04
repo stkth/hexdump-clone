@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.13)
 
+set(BINARY_TARGET hexdump-clone)
+
 project (
     "hexdump-clone"
     VERSION 0.1.0
@@ -13,12 +15,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 # Main target
-add_executable(hexdump-clone)
+add_executable(${BINARY_TARGET})
 
 target_sources(
-    hexdump-clone
+    ${BINARY_TARGET}
     PRIVATE
-    hexdump-clone.c
+     ${BINARY_TARGET}.c
 )
 
 # Embed git to get version information
@@ -56,7 +58,7 @@ set(RECOMMENDED_CFLAGS
      -grecord-gcc-switches
 )
 
-target_compile_options(hexdump-clone PRIVATE
+target_compile_options(${BINARY_TARGET} PRIVATE
      -std=c23
 
     -DCVS_GIT_VERSION=\"${CVS_GIT_VERSION}\"
