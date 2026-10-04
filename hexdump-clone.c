@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPLv2
+// Copyright: Steffen Kothe <steffen.kothe@skothe.net>  2026
 
 /* Self-Exercise:
  * Implement a hexdump or simple hd clone while focusing on read, open, close
@@ -19,16 +20,20 @@
 #include <assert.h>
 #include <string.h>
 
+#define HEXDUMP_CLONE "hexdump-clone"
+
 #define ASCII_PRINT_START (uint8_t)0x1f
 #define ASCII_PRINT_END (uint8_t)0x7f
 
-#define HEXDUMP_CLONE "hexdump-clone"
+#define BYTESPERLINE_DEFAULT (uint8_t)8
+#define BYTESPERLINE_RANGE(bpl) ((bpl > 0) && (bpl <= 32))
 
-uint8_t bytesperline = 8;
-
-void printSingleString(uint8_t *buf, size_t size, off_t offset)
+void printByteLine(uint8_t *buf, uint8_t bytesperline, size_t size,
+		       off_t offset)
 {
 	assert(offset >= 0);
+    assert(bytesperline > 0);
+    assert(buf != NULL);
 
 	if (buf == NULL)
 		return;
@@ -87,36 +92,47 @@ void printUsage()
 {
 	fprintf(stdout,
 		"Usage %s"
-		"\n\t-s <skip bytes>"
-		"\n\t-b <bytes per line>"
-		"\n\t-n <num of bytes>"
+		"\n\t-s <skip bytes> (> 0) "
+		"\n\t-b <bytes per line> (1 to 32)"
+		"\n\t-n <num of bytes> (> 0)"
 		"\n\t<path-to-file> or '-' to read from stdin\n",
 		HEXDUMP_CLONE);
 }
 
 int main(int argc, char *argv[])
 {
+    uint8_t bytesperline = BYTESPERLINE_DEFAULT;
+	off_t offsetcnt = 0, skip = 0;
+	ssize_t readlimit = 0, ret = 0;
 	int fd, opt;
 	uint8_t *bytebuf;
-	off_t offsetcnt = 0;
-	off_t skip = 0;
-	ssize_t readlimit = 0;
-	ssize_t ret = 0;
+
 
 	while ((opt = getopt(argc, argv, "hn:b:s:")) != -1) {
 		switch (opt) {
 		case 'n':
 			readlimit = strtol(optarg, NULL, 10);
-			if (readlimit < 0)
+			if (readlimit < 0) {
+				fprintf(stderr, "Flag -n %ld out of range\n",
+					readlimit);
 				exit(EXIT_FAILURE);
+			}
 			break;
 		case 'b':
 			bytesperline = (uint8_t)strtoul(optarg, NULL, 10);
-			if (bytesperline <= 0)
+			if (!BYTESPERLINE_RANGE(bytesperline)) {
+				fprintf(stderr, "Flag -b %d out of range\n",
+					bytesperline);
 				exit(EXIT_FAILURE);
+			}
 			break;
 		case 's':
 			skip = (off_t)strtoul(optarg, NULL, 10);
+			if (skip < 0) {
+				fprintf(stderr, "Flag -s %ld out of range\n",
+					skip);
+				exit(EXIT_FAILURE);
+			}
 			break;
 		case 'h':
 			printUsage();
@@ -128,7 +144,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (argv[optind] == NULL) {
-		fprintf(stderr, "Source for dump not selected!\n");
+		fprintf(stderr, "Source for hexdump not selected!\n");
 		printUsage();
 		exit(EXIT_FAILURE);
 	}
@@ -167,14 +183,15 @@ int main(int argc, char *argv[])
 			readlimit -= ret;
 
 			if (readlimit < 0) {
-				printSingleString(bytebuf,
+				printByteLine(bytebuf, bytesperline,
 						  (size_t)(readlimit + ret),
 						  offsetcnt);
 				break;
 			}
 		}
 
-		printSingleString(bytebuf, (size_t)ret, offsetcnt);
+		printByteLine(bytebuf, bytesperline, (size_t)ret,
+				  offsetcnt);
 		offsetcnt += bytesperline;
 	}
 
