@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.13)
 set(BINARY_TARGET hexdump-clone)
 
 project (
-    "hexdump-clone"
+    ${BINARY_TARGET}
     VERSION 0.1.0
     LANGUAGES C
 )
