@@ -81,6 +81,7 @@ void printSingleByteBuffer(uint8_t *buf, uint8_t bytesperline, size_t size,
 	printf(" | \n");
 }
 
+
 ssize_t readBytesFromFileDesc(int fd, uint8_t *bytebuf, size_t bytes)
 {
 	size_t count = 0;
@@ -104,10 +105,13 @@ ssize_t readBytesFromFileDesc(int fd, uint8_t *bytebuf, size_t bytes)
 	return (ssize_t)count;
 }
 
+
 void printVersion()
 {
 	printf("git-%s\n", CVS_GIT_VERSION);
 }
+
+
 void printUsage()
 {
 	fprintf(stdout,
@@ -175,7 +179,7 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 	}
 
-	if (skip != 0) {
+	if (fd != STDIN_FILENO) {
 		if (-1 == lseek(fd, skip, SEEK_SET)) {
 			fprintf(stderr, "%s : Skipping %ld bytes failed!\n",
 				strerror(errno), skip);
