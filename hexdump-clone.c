@@ -24,7 +24,7 @@
 
 /* CVS_GIT_VERSION is obtained from cmake project configuration */
 #ifndef CVS_GIT_VERSION
-#define CVS_GTT_VERSION "unset"
+#define CVS_GIT_VERSION "unset"
 #endif
 
 #define ASCII_PRINT_START (uint8_t)0x1f
