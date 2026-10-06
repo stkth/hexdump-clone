@@ -203,9 +203,11 @@ int main(int argc, char *argv[])
 	free(bytebuf);
 	bytebuf = NULL;
 
-	if (close(fd)) {
-		perror("Failed to close file\n");
-		exit(EXIT_FAILURE);
+	if (fd != STDIN_FILENO) {
+		if (close(fd)) {
+			perror("Failed to close file\n");
+			exit(EXIT_FAILURE);
+		}
 	}
 
 	exit(EXIT_SUCCESS);
