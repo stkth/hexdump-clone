@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
 	}
 
 	offsetcnt = skip;
-	while (1) {
+	while (true) {
 		ret = readBytesFromFileDesc(fd, bytebuf, bytesperline);
 
 		if (ret <= 0)
