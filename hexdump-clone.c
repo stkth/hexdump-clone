@@ -36,9 +36,14 @@
 #define BYTESPERLINE_RANGE(bpl) \
 	((bpl > BYTESPERLINE_MIN) && (bpl <= BYTESPERLINE_MAX))
 
-void printByteLine(uint8_t *buf, uint8_t bytesperline, size_t size,
-		   off_t offset)
+#define MIN_ADDR_BYTES (uint8_t)8
+#define MAX_ADDR_BYTES (uint8_t)16
+
+void printSingleByteBuffer(uint8_t *buf, uint8_t bytesperline, size_t size,
+			   off_t offset)
 {
+	int offp;
+
 	assert(offset >= 0);
 	assert(bytesperline > 0);
 	assert(buf != NULL);
@@ -49,17 +54,24 @@ void printByteLine(uint8_t *buf, uint8_t bytesperline, size_t size,
 	if (size == 0)
 		return;
 
-	printf("%.*lx | ", bytesperline, offset);
+	/* Check range to obtain minimal required bytes for offset print */
+	for (offp = 0; offp < MAX_ADDR_BYTES; offp++) {
+		if (offset < (INT32_MAX << offp))
+			break;
+	}
 
+	printf("%.*lx | ", MIN_ADDR_BYTES + offp, offset);
+
+	/* Print Bytes */
 	for (size_t i = 0; i < size; i++)
 		printf("%.2x ", buf[i]);
 
-	if (size < bytesperline)
-		for (size_t i = size; i < bytesperline; i++)
-			printf("   ");
+	for (size_t i = size; i < bytesperline; i++)
+		printf("   ");
 
 	printf(" | ");
 
+	/* ASCII representation */
 	for (size_t i = 0; i < size; i++)
 		buf[i] >= ASCII_PRINTABLE_START &&buf[i] <=
 				ASCII_PRINTABLE_END ?
@@ -96,7 +108,6 @@ void printVersion()
 {
 	printf("git-%s\n", CVS_GIT_VERSION);
 }
-
 void printUsage()
 {
 	fprintf(stdout,
@@ -172,19 +183,18 @@ int main(int argc, char *argv[])
 	} else
 		fd = STDIN_FILENO;
 
-	bytebuf = (uint8_t *)malloc(bytesperline * sizeof(uint8_t));
-	if (bytebuf == NULL) {
-		fprintf(stderr, "Allocation of byte buffer failed");
-		exit(EXIT_FAILURE);
-	}
-
 	if (skip != 0) {
 		if (-1 == lseek(fd, skip, SEEK_SET)) {
 			fprintf(stderr, "%s : Skipping %ld bytes failed!\n",
 				strerror(errno), skip);
-			free(bytebuf);
 			exit(EXIT_FAILURE);
 		}
+	}
+
+	bytebuf = (uint8_t *)malloc(bytesperline * sizeof(uint8_t));
+	if (bytebuf == NULL) {
+		fprintf(stderr, "Allocation of byte buffer failed");
+		exit(EXIT_FAILURE);
 	}
 
 	offsetcnt = skip;
@@ -198,14 +208,15 @@ int main(int argc, char *argv[])
 			readlimit -= ret;
 
 			if (readlimit < 0) {
-				printByteLine(bytebuf, bytesperline,
-					      (size_t)(readlimit + ret),
-					      offsetcnt);
+				printSingleByteBuffer(bytebuf, bytesperline,
+						      (size_t)(readlimit + ret),
+						      offsetcnt);
 				break;
 			}
 		}
 
-		printByteLine(bytebuf, bytesperline, (size_t)ret, offsetcnt);
+		printSingleByteBuffer(bytebuf, bytesperline, (size_t)ret,
+				      offsetcnt);
 		offsetcnt += bytesperline;
 	}
 
