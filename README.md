@@ -27,7 +27,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug  -B build-debug/
 
 - [cmake](https://cmake.org/cmake/help/latest/guide/tutorial/index.html)
 - [gitlint](https://joe.gl/ombek/blog/pr-gitlint/)
-- [clang-format]([https://clang.llvm.org/docs/ClangFormat.html)
+- [clang-format](https://clang.llvm.org/docs/ClangFormat.html)
 
 ## TODO
 
