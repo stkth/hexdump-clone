@@ -91,6 +91,11 @@ ssize_t readBytesFromFileDesc(int fd, uint8_t *bytebuf, size_t bytes)
 	return (ssize_t)count;
 }
 
+void printVersion()
+{
+	printf("git-%s\n", CVS_GIT_VERSION);
+}
+
 void printUsage()
 {
 	fprintf(stdout,
@@ -100,11 +105,7 @@ void printUsage()
 		"\n\t-b <bytes per line> (1 to 32)"
 		"\n\t-n <num of bytes> (> 0)\n\n",
 		HEXDUMP_CLONE);
-}
-
-void printVersion()
-{
-	printf("git-%s\n", CVS_GIT_VERSION);
+	printVersion();
 }
 
 int main(int argc, char *argv[])
