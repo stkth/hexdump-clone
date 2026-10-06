@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
 			bytesperline = (uint8_t)value;
 			break;
 		case 's':
-            value = strtoul(optarg, NULL, 10);
+			value = strtoul(optarg, NULL, 10);
 			if (errno == EINVAL || errno == ERANGE) {
 				fprintf(stderr, "Flag -s out of range\n");
 				exit(EXIT_FAILURE);
