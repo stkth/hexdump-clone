@@ -67,30 +67,24 @@ void printByteLine(uint8_t *buf, uint8_t bytesperline, size_t size,
 
 ssize_t readBytesFromFileDesc(int fd, uint8_t *bytebuf, size_t bytes)
 {
-	ssize_t readret;
-	size_t count;
+	size_t count = 0;
 
 	assert(bytebuf != NULL);
 	assert(bytes > 0);
 
-	count = 0;
-	while (1) {
-		readret = read(fd, bytebuf + count, bytes - count);
-		if (readret == 0) {
-			if (count != 0)
-				return (ssize_t)(bytes - count);
+	while (count < bytes) {
+		ssize_t ret = read(fd, bytebuf + count, bytes - count);
 
-			return 0;
-		}
+		if (ret == 0)
+			return (ssize_t)count;
 
-		if (readret < 0)
-			return readret;
+		if (ret < 0)
+			return -1;
 
-		if (bytes == (size_t)readret)
-			return readret;
-
-		count = bytes - (size_t)readret;
+		count += (size_t)ret;
 	}
+
+	return (ssize_t)count;
 }
 
 void printUsage()
