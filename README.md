@@ -2,12 +2,6 @@
 
 A fairly leightweight pure ``C`` simple hexdump tool, intended to refresh my C knowledge.
 
-## Help
-
-```
-./hexdump-clone -h
-```
-
 ## Build the program
 
 Build the program with the following command in a release setup:
@@ -22,6 +16,15 @@ Alternatively as debug build:
 cmake -DCMAKE_BUILD_TYPE=Debug  -B build-debug/
 ```
 
+## Help
+
+```
+./hexdump-clone -h
+```
+
+## C23
+
+The project setup enforces C23 ruleset.
 
 ## Additional resources
 
