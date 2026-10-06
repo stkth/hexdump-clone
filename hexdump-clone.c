@@ -174,6 +174,7 @@ int main(int argc, char *argv[])
 		if (-1 == lseek(fd, skip, SEEK_SET)) {
 			fprintf(stderr, "%s : Skipping %ld bytes failed!\n",
 				strerror(errno), skip);
+            free(bytebuf);
 			exit(EXIT_FAILURE);
 		}
 	}
