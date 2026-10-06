@@ -168,20 +168,12 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	if (argv[optind] == NULL) {
-		fprintf(stderr, "Source for hexdump not selected!\n");
-		printUsage();
-		exit(EXIT_FAILURE);
-	}
-
-	if (argv[optind][0] != '-') {
-		fd = open(argv[optind], O_RDONLY);
-		if (fd == -1) {
+    fd = argv[optind] == NULL ? STDIN_FILENO : open(argv[optind], O_RDONLY);
+    if (fd == -1) {
 			perror("Failed to open file");
+            printUsage();
 			exit(EXIT_FAILURE);
-		}
-	} else
-		fd = STDIN_FILENO;
+	}
 
 	if (skip != 0) {
 		if (-1 == lseek(fd, skip, SEEK_SET)) {
