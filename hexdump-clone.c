@@ -31,7 +31,10 @@
 #define ASCII_PRINTABLE_END (uint8_t)0x7e
 
 #define BYTESPERLINE_DEFAULT (uint8_t)8
-#define BYTESPERLINE_RANGE(bpl) ((bpl > 0) && (bpl <= 32))
+#define BYTESPERLINE_MAX 32
+#define BYTESPERLINE_MIN 0
+#define BYTESPERLINE_RANGE(bpl) \
+	((bpl > BYTESPERLINE_MIN) && (bpl <= BYTESPERLINE_MAX))
 
 void printByteLine(uint8_t *buf, uint8_t bytesperline, size_t size,
 		   off_t offset)
@@ -58,7 +61,8 @@ void printByteLine(uint8_t *buf, uint8_t bytesperline, size_t size,
 	printf(" | ");
 
 	for (size_t i = 0; i < size; i++)
-		buf[i] >= ASCII_PRINTABLE_START && buf[i] <= ASCII_PRINTABLE_END ?
+		buf[i] >= ASCII_PRINTABLE_START &&buf[i] <=
+				ASCII_PRINTABLE_END ?
 			printf("%c", buf[i]) :
 			printf(".");
 
