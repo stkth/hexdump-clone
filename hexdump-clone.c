@@ -27,8 +27,8 @@
 #define CVS_GIT_VERSION "unset"
 #endif
 
-#define ASCII_PRINT_START (uint8_t)0x1f
-#define ASCII_PRINT_END (uint8_t)0x7f
+#define ASCII_PRINTABLE_START (uint8_t)0x20
+#define ASCII_PRINTABLE_END (uint8_t)0x7e
 
 #define BYTESPERLINE_DEFAULT (uint8_t)8
 #define BYTESPERLINE_RANGE(bpl) ((bpl > 0) && (bpl <= 32))
@@ -58,7 +58,7 @@ void printByteLine(uint8_t *buf, uint8_t bytesperline, size_t size,
 	printf(" | ");
 
 	for (size_t i = 0; i < size; i++)
-		buf[i] > ASCII_PRINT_START &&buf[i] < ASCII_PRINT_END ?
+		buf[i] >= ASCII_PRINTABLE_START && buf[i] <= ASCII_PRINTABLE_END ?
 			printf("%c", buf[i]) :
 			printf(".");
 
