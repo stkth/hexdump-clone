@@ -76,6 +76,7 @@ ssize_t readBytesFromFileDesc(int fd, uint8_t *bytebuf, size_t bytes)
 	assert(bytebuf != NULL);
 	assert(bytes > 0);
 
+	memset(bytebuf, 0, bytes);
 	while (count < bytes) {
 		ssize_t ret = read(fd, bytebuf + count, bytes - count);
 
