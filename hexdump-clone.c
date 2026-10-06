@@ -115,32 +115,34 @@ int main(int argc, char *argv[])
 	ssize_t readlimit = 0, ret = 0;
 	int fd, opt;
 	uint8_t *bytebuf;
+	unsigned long value;
 
 	while ((opt = getopt(argc, argv, "vhn:b:s:")) != -1) {
 		switch (opt) {
 		case 'n':
-			readlimit = strtol(optarg, NULL, 10);
-			if (readlimit < 0) {
-				fprintf(stderr, "Flag -n %ld out of range\n",
-					readlimit);
+			value = strtoul(optarg, NULL, 10);
+			if (errno == EINVAL || errno == ERANGE) {
+				fprintf(stderr, "Flag -n out of range\n");
 				exit(EXIT_FAILURE);
 			}
+			readlimit = (ssize_t)value;
 			break;
 		case 'b':
-			bytesperline = (uint8_t)strtoul(optarg, NULL, 10);
-			if (!BYTESPERLINE_RANGE(bytesperline)) {
-				fprintf(stderr, "Flag -b %d out of range\n",
-					bytesperline);
+			value = strtoul(optarg, NULL, 10);
+			if (!BYTESPERLINE_RANGE(value) || errno == EINVAL ||
+			    errno == ERANGE) {
+				fprintf(stderr, "Flag -b out of range\n");
 				exit(EXIT_FAILURE);
 			}
+			bytesperline = (uint8_t)value;
 			break;
 		case 's':
-			skip = (off_t)strtoul(optarg, NULL, 10);
-			if (skip < 0) {
-				fprintf(stderr, "Flag -s %ld out of range\n",
-					skip);
+            value = strtoul(optarg, NULL, 10);
+			if (errno == EINVAL || errno == ERANGE) {
+				fprintf(stderr, "Flag -s out of range\n");
 				exit(EXIT_FAILURE);
 			}
+			skip = (off_t)value;
 			break;
 		case 'h':
 			printUsage();
