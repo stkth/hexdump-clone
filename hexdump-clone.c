@@ -82,7 +82,6 @@ void printSingleByteBuffer(uint8_t *buf, uint8_t bytesperline, size_t size,
 	printf(" | \n");
 }
 
-
 ssize_t readBytesFromFileDesc(int fd, uint8_t *bytebuf, size_t bytes)
 {
 	size_t count = 0;
@@ -106,12 +105,10 @@ ssize_t readBytesFromFileDesc(int fd, uint8_t *bytebuf, size_t bytes)
 	return (ssize_t)count;
 }
 
-
 void printVersion()
 {
 	printf("Version: git-%s\n", CVS_GIT_VERSION);
 }
-
 
 void printUsage()
 {
@@ -137,6 +134,7 @@ int main(int argc, char *argv[])
 	while ((opt = getopt(argc, argv, "vhn:b:s:")) != -1) {
 		switch (opt) {
 		case 'n':
+			errno = 0;
 			value = strtoul(optarg, NULL, 10);
 			if (errno == EINVAL || errno == ERANGE) {
 				fprintf(stderr, "Flag -n out of range\n");
@@ -145,6 +143,7 @@ int main(int argc, char *argv[])
 			readlimit = (ssize_t)value;
 			break;
 		case 'b':
+			errno = 0;
 			value = strtoul(optarg, NULL, 10);
 			if (!BYTESPERLINE_RANGE(value) || errno == EINVAL ||
 			    errno == ERANGE) {
@@ -154,6 +153,7 @@ int main(int argc, char *argv[])
 			bytesperline = (uint8_t)value;
 			break;
 		case 's':
+			errno = 0;
 			value = strtoul(optarg, NULL, 10);
 			if (errno == EINVAL || errno == ERANGE) {
 				fprintf(stderr, "Flag -s out of range\n");
@@ -173,11 +173,11 @@ int main(int argc, char *argv[])
 		}
 	}
 
-    fd = argv[optind] == NULL ? STDIN_FILENO : open(argv[optind], O_RDONLY);
-    if (fd == -1) {
-			perror("Failed to open file");
-            printUsage();
-			exit(EXIT_FAILURE);
+	fd = argv[optind] == NULL ? STDIN_FILENO : open(argv[optind], O_RDONLY);
+	if (fd == -1) {
+		perror("Failed to open file");
+		printUsage();
+		exit(EXIT_FAILURE);
 	}
 
 	if (fd != STDIN_FILENO) {
