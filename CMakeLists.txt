@@ -44,26 +44,48 @@ set(RECOMMENDED_CFLAGS
      -Werror
      -Wformat-security
      -Wformat=2
-     -pedantic
      -Wconversion
-     -D_FORTIFY_SOURCE=2
-     -Wl,-pie
-     -fcf-protection
+     -Wstack-protector
+
      -pipe
+     -pedantic
+
+     -frecord-gcc-switches
+
+     -mshstk
+     -fsplit-stack
+     -fstack-protector-all
+     -fstack-clash-protection
+     -D_FORTIFY_SOURCE=2 
+
+     -ftrapv
+     -fanalyzer
+
+     -fsanitize=address
+     -fsanitize=undefined
+     -fsanitize=bounds
+)
+
+set(RECOMMENDED_LDFLAGS
      -Wl,-z,defs
      -Wl,-z,now
      -Wl,-z,relro
      -Wl,-z,noexecstack
-     -fstack-protector-strong
-     -frecord-gcc-switches
+     -Wl,-pie
+     -fsanitize=address
+     -fsanitize=undefined
+     -fsanitize=bounds
+)
+
+target_link_options(${BINARY_TARGET} PRIVATE
+    ${RECOMMENDED_LDFLAGS}
 )
 
 target_compile_options(${BINARY_TARGET} PRIVATE
-     -std=c23
-
+    -std=c23
+    ${RECOMMENDED_CFLAGS}
     -DCVS_GIT_VERSION=\"${CVS_GIT_VERSION}\"
 
-    ${RECOMMENDED_CFLAGS}
-     $<$<CONFIG:Debug>:>
-     $<$<CONFIG:Release>:>
+    #$<$<CONFIG:Debug>:>
+    #$<$<CONFIG:Release>:>
 )
