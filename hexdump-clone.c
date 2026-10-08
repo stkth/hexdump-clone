@@ -3,9 +3,9 @@
 
 /* Self-Exercise:
  * Implement a hexdump or simple hd clone while focusing on read, open, close
- * syscalls, some formatting, basic code seperation and proper error handling.
+ * syscalls, some formatting, basic code separation and proper error handling.
  *
- * Finanlize the refresher with small -n option for count of bytes to be read.
+ * Finalize the refresher with small -n option for count of bytes to be read.
  * Add a skip option which uses lseek to manipulate the file offset
  *
  */
