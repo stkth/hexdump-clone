@@ -47,6 +47,7 @@ void printSingleByteBuffer(uint8_t *buf, uint8_t bytesperline, size_t size,
 	assert(offset >= 0);
 	assert(bytesperline > 0);
 	assert(buf != NULL);
+	assert(size > 0);
 
 	if (buf == NULL)
 		return;
