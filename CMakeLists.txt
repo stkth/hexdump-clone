@@ -55,7 +55,7 @@ set(RECOMMENDED_CFLAGS
      -Wl,-z,relro
      -Wl,-z,noexecstack
      -fstack-protector-strong
-     -grecord-gcc-switches
+     -frecord-gcc-switches
 )
 
 target_compile_options(${BINARY_TARGET} PRIVATE
